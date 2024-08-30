@@ -44,4 +44,19 @@ public class ContatoRepositorio(BancoContext bancoContext) : IContatoRepositorio
 
         throw new Exception("Houve um erro na atualização do contato");
     }
+
+    public bool Apagar(int id)
+    {
+        ContatoModel? contatoDB = ListarPorId(id);
+
+        if (contatoDB != null)
+        {
+            _bancoContext.Contatos?.Remove(contatoDB);
+            _bancoContext.SaveChanges();
+
+            return true;
+        }
+
+        throw new Exception("Houve um erro na deleção do contato");
+    }
 }

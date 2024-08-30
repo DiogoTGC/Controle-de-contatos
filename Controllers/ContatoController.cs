@@ -1,6 +1,7 @@
 using ControleDeContatos.Models;
 using ControleDeContatos.Repositorio;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
 
 namespace ControleDeContatos.Controllers;
 
@@ -26,9 +27,10 @@ public class ContatoController(IContatoRepositorio contatoRepositorio) : Control
         return View(contato);
     }
 
-    public IActionResult ApagarConfirmacao()
+    public IActionResult ApagarConfirmacao(int id)
     {
-        return View();
+        ContatoModel? contato = _contatoRepositorio.ListarPorId(id);
+        return View(contato);
     }
 
     [HttpPost]
@@ -43,6 +45,13 @@ public class ContatoController(IContatoRepositorio contatoRepositorio) : Control
     public IActionResult Alterar(ContatoModel contato)
     {
         _contatoRepositorio.Atualizar(contato);
+
+        return RedirectToAction("Index");
+    }
+
+    public IActionResult Apagar(int id)
+    {
+        _contatoRepositorio.Apagar(id);
 
         return RedirectToAction("Index");
     }
