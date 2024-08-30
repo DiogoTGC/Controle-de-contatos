@@ -1,7 +1,6 @@
 using ControleDeContatos.Models;
 using ControleDeContatos.Repositorio;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
 
 namespace ControleDeContatos.Controllers;
 
@@ -36,23 +35,65 @@ public class ContatoController(IContatoRepositorio contatoRepositorio) : Control
     [HttpPost]
     public IActionResult Criar(ContatoModel contato)
     {
-        _contatoRepositorio.Adicionar(contato);
+        try
+        {
+            if (ModelState.IsValid)
+            {
+                _contatoRepositorio.Adicionar(contato);
+                TempData["MensagemSucesso"] = "Contato criado com sucesso";
+                return RedirectToAction("Index");
+            }
 
-        return RedirectToAction("Index");
+            return View(contato);
+        }
+        catch (Exception erro)
+        {
+            TempData["MensagemErro"] = $"Falha ao cadastrar seu contato, tente novamente. Detalhe do erro: {erro.Message}";
+            return RedirectToAction("Index");
+        }
     }
 
     [HttpPost]
     public IActionResult Alterar(ContatoModel contato)
     {
-        _contatoRepositorio.Atualizar(contato);
+        try
+        {
+            if (ModelState.IsValid)
+            {
+                _contatoRepositorio.Atualizar(contato);
+                TempData["MensagemSucesso"] = "Contato alterado com sucesso";
+                return RedirectToAction("Index");
+            }
 
-        return RedirectToAction("Index");
+            return View("Editar", contato);
+        }
+        catch (Exception erro)
+        {
+            TempData["MensagemErro"] = $"Falha ao alterar seu contato, tente novamente. Detalhe do erro: {erro.Message}";
+            return RedirectToAction("Index");
+        }
     }
 
     public IActionResult Apagar(int id)
     {
-        _contatoRepositorio.Apagar(id);
+        try
+        {
+            bool apagado = _contatoRepositorio.Apagar(id);
 
-        return RedirectToAction("Index");
+            if (apagado)
+            {
+                TempData["MensagemSucesso"] = "Contato apagado com sucesso";
+            }
+            else
+            {
+                TempData["MensagemErro"] = $"Falha ao apagar seu contato, tente novamente.";
+            }
+            return RedirectToAction("Index");
+        }
+        catch (Exception erro)
+        {
+            TempData["MensagemErro"] = $"Falha ao apagar seu contato, tente novamente. Detalhe do erro: {erro.Message}";
+            return RedirectToAction("Index");
+        }
     }
 }
