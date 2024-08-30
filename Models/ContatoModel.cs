@@ -3,7 +3,7 @@ namespace ControleDeContatos.Models;
 public class ContatoModel
 {
     public int Id { get; set; }
-    public required string Nome { get; set; }
-    public required string Email { get; set; }
-    public required string Celular { get; set; }
+    public string? Nome { get; set; }
+    public string? Email { get; set; }
+    public string? Celular { get; set; }
 }
