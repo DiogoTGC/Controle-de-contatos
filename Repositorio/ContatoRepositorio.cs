@@ -3,13 +3,13 @@ using ControleDeContatos.Models;
 
 namespace ControleDeContatos.Repositorio;
 
-public class ContatoRepositorio : IContatoRepositorio
+public class ContatoRepositorio(BancoContext bancoContext) : IContatoRepositorio
 {
-    private readonly BancoContext _bancoContext;
+    private readonly BancoContext _bancoContext = bancoContext;
 
-    public ContatoRepositorio(BancoContext bancoContext)
+    public List<ContatoModel>? BuscarTodos()
     {
-        _bancoContext = bancoContext;
+        return _bancoContext.Contatos?.ToList();
     }
 
     public ContatoModel Adicionar(ContatoModel contato)

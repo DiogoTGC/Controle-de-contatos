@@ -10,7 +10,9 @@ public class ContatoController(IContatoRepositorio contatoRepositorio) : Control
 
     public IActionResult Index()
     {
-        return View();
+        List<ContatoModel>? contatos = _contatoRepositorio.BuscarTodos();
+
+        return View(contatos);
     }
 
     public IActionResult Criar()
