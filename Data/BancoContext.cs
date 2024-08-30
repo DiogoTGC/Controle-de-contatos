@@ -3,11 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ControleDeContatos.Data;
 
-public class BancoContext : DbContext
+public class BancoContext(DbContextOptions<BancoContext> options) : DbContext(options)
 {
-    public BancoContext(DbContextOptions<BancoContext> options) : base(options)
-    {
-    }
-
-    public DbSet<ContatoModel> Contatos { get; set; }
+    public DbSet<ContatoModel>? Contatos { get; set; }
 }
