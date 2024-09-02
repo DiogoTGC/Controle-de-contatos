@@ -3,6 +3,8 @@
 
 // Write your JavaScript code.
 
+let table = new DataTable('#contatoTabela');
+
 $('.close-alert').click(function () {
     $('.alert').hide('hide');
 });
