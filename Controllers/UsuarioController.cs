@@ -1,5 +1,6 @@
 using ControleDeContatos.Models;
 using ControleDeContatos.Repositorio;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ControleDeContatos.Controllers;
@@ -53,13 +54,24 @@ public class UsuarioController(IUsuarioRepositorio usuarioRepositorio) : Control
     }
 
     [HttpPost]
-    public IActionResult Alterar(UsuarioModel usuario)
+    public IActionResult Alterar(UsuarioSemSenhaModel usuarioSemSenha)
     {
         try
         {
+            UsuarioModel? usuario = _usuarioRepositorio.ListarPorId(usuarioSemSenha.Id);
             if (ModelState.IsValid)
             {
-                _usuarioRepositorio.Atualizar(usuario);
+                if (usuario != null)
+                {
+                    usuario.Id = usuarioSemSenha.Id;
+                    usuario.Nome = usuarioSemSenha.Nome;
+                    usuario.Email = usuarioSemSenha.Email;
+                    usuario.Login = usuarioSemSenha.Login;
+                    usuario.Perfil = usuarioSemSenha.Perfil;
+
+                    _usuarioRepositorio.Atualizar(usuario);
+                }
+
                 TempData["MensagemSucesso"] = "Usuario alterado com sucesso";
                 return RedirectToAction("Index");
             }

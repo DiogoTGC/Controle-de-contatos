@@ -3,7 +3,7 @@ using ControleDeContatos.Enums;
 
 namespace ControleDeContatos.Models;
 
-public class UsuarioModel
+public class UsuarioSemSenhaModel
 {
     public int Id { get; set; }
     [Required(ErrorMessage = "Digite o nome do usuário")]
@@ -15,9 +15,4 @@ public class UsuarioModel
     public required string Email { get; set; }
     [Required(ErrorMessage = "Escolha um perfil de usuário")]
     public PerfilEnum? Perfil { get; set; }
-    [Required(ErrorMessage = "Digite a senha do usuário")]
-    public required string Senha { get; set; }
-    public DateTime DataCadastro { get; set; }
-    public DateTime? DataAtualizacao { get; set; }
-
 }
