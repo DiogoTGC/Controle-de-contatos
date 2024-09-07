@@ -1,15 +1,19 @@
+using ControleDeContatos.Helper;
 using ControleDeContatos.Models;
 using ControleDeContatos.Repositorio;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ControleDeContatos.Controllers;
 
-public class LoginController(IUsuarioRepositorio usuarioRepositorio) : Controller
+public class LoginController(IUsuarioRepositorio usuarioRepositorio, ISessao sessao) : Controller
 {
     private readonly IUsuarioRepositorio _usuarioRepositorio = usuarioRepositorio;
+    private readonly ISessao _sessao = sessao;
 
     public IActionResult Index()
     {
+        UsuarioModel? usuarioNaSessao = _sessao.BuscarSessaoUsuario();
+        if (usuarioNaSessao != null) return RedirectToAction("Index", "Home");
         return View();
     }
 
@@ -26,6 +30,7 @@ public class LoginController(IUsuarioRepositorio usuarioRepositorio) : Controlle
                 {
                     if (usuario.SenhaValida(loginModel.Senha))
                     {
+                        _sessao.CriarSessaoUsuario(usuario);
                         return RedirectToAction("Index", "Home");
                     }
                     TempData["MensagemErro"] = $"Senha incorreta. Tente novamente.";
