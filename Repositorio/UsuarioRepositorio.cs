@@ -9,8 +9,12 @@ public class UsuarioRepositorio(BancoContext bancoContext) : IUsuarioRepositorio
 
     public UsuarioModel? ListarPorId(int id)
     {
-        UsuarioModel? usuario = _bancoContext.Usuarios?.FirstOrDefault(x => x.Id == id);
-        return usuario;
+        return _bancoContext.Usuarios?.FirstOrDefault(x => x.Id == id);
+    }
+
+    public UsuarioModel? BuscarPorLogin(string login)
+    {
+        return _bancoContext.Usuarios?.FirstOrDefault(x => x.Login.ToUpper() == login.ToUpper());
     }
 
     public List<UsuarioModel>? BuscarTodos()
