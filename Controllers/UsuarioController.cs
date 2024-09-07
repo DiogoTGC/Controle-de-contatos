@@ -1,6 +1,5 @@
 using ControleDeContatos.Models;
 using ControleDeContatos.Repositorio;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ControleDeContatos.Controllers;
