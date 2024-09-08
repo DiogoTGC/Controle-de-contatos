@@ -1,3 +1,4 @@
+@using ControleDeContatos.Enums
 @model UsuarioModel
 
 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Olá, @Model.Nome</a>
@@ -11,12 +12,16 @@
             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Página
                 Inicial</a>
         </li>
+
         <li class="nav-item">
             <a class="nav-link text-dark" asp-area="" asp-controller="Contato" asp-action="Index">Contatos</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Index">Usuarios</a>
-        </li>
+        @if (Model.Perfil == PerfilEnum.Admin)
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Index">Usuarios</a>
+            </li>
+        }
     </ul>
 </div>
 <a class="btn btn-danger" asp-area="" asp-controller="Login" asp-action="Sair">Sair</a>
