@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using ControleDeContatos.Enums;
+using ControleDeContatos.Helper;
 
 namespace ControleDeContatos.Models;
 
@@ -20,8 +21,13 @@ public class UsuarioModel
     public DateTime DataCadastro { get; set; }
     public DateTime? DataAtualizacao { get; set; }
 
+    public void SetSenhaHash()
+    {
+        Senha = Senha.GerarHash();
+    }
+
     public bool SenhaValida(string senha)
     {
-        return Senha == senha;
+        return Senha == senha.GerarHash();
     }
 }
