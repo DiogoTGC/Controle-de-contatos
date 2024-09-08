@@ -45,4 +45,10 @@ public class LoginController(IUsuarioRepositorio usuarioRepositorio, ISessao ses
             return Redirect("Index");
         }
     }
+
+    public IActionResult Sair()
+    {
+        _sessao.RemoverSessaoUsuario();
+        return RedirectToAction("Index", "Login");
+    }
 }
