@@ -23,13 +23,13 @@ public class UsuarioController(IUsuarioRepositorio usuarioRepositorio) : Control
 
     public IActionResult Editar(int id)
     {
-        UsuarioModel? usuario = _usuarioRepositorio.ListarPorId(id);
+        UsuarioModel? usuario = _usuarioRepositorio.BuscarPorId(id);
         return View(usuario);
     }
 
     public IActionResult ApagarConfirmacao(int id)
     {
-        UsuarioModel? usuario = _usuarioRepositorio.ListarPorId(id);
+        UsuarioModel? usuario = _usuarioRepositorio.BuscarPorId(id);
         return View(usuario);
     }
 
@@ -59,7 +59,7 @@ public class UsuarioController(IUsuarioRepositorio usuarioRepositorio) : Control
     {
         try
         {
-            UsuarioModel? usuario = _usuarioRepositorio.ListarPorId(usuarioSemSenha.Id);
+            UsuarioModel? usuario = _usuarioRepositorio.BuscarPorId(usuarioSemSenha.Id);
             if (ModelState.IsValid)
             {
                 if (usuario != null)
