@@ -1,4 +1,5 @@
 using ControleDeContatos.Filters;
+using ControleDeContatos.Helper;
 using ControleDeContatos.Models;
 using ControleDeContatos.Repositorio;
 using Microsoft.AspNetCore.Mvc;
@@ -6,15 +7,23 @@ using Microsoft.AspNetCore.Mvc;
 namespace ControleDeContatos.Controllers;
 
 [PaginaParaUsuarioLogado]
-public class ContatoController(IContatoRepositorio contatoRepositorio) : Controller
+public class ContatoController(IContatoRepositorio contatoRepositorio, ISessao sessao) : Controller
 {
     private readonly IContatoRepositorio _contatoRepositorio = contatoRepositorio;
+    private readonly ISessao _sessao = sessao;
 
     public IActionResult Index()
     {
-        List<ContatoModel>? contatos = _contatoRepositorio.BuscarTodos();
+        UsuarioModel? usuarioLogado = _sessao.BuscarSessaoUsuario();
 
-        return View(contatos);
+        if (usuarioLogado != null)
+        {
+            List<ContatoModel>? contatos = _contatoRepositorio.BuscarTodos(usuarioLogado.Id);
+
+            return View(contatos);
+        }
+
+        return RedirectToAction("Index", "Login");
     }
 
     public IActionResult Criar()
@@ -41,6 +50,9 @@ public class ContatoController(IContatoRepositorio contatoRepositorio) : Control
         {
             if (ModelState.IsValid)
             {
+                UsuarioModel? usuarioLogado = _sessao.BuscarSessaoUsuario();
+                if (usuarioLogado != null) contato.UsuarioId = usuarioLogado.Id;
+
                 _contatoRepositorio.Adicionar(contato);
                 TempData["MensagemSucesso"] = "Contato criado com sucesso";
                 return RedirectToAction("Index");
