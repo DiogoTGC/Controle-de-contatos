@@ -7,7 +7,7 @@ public class UsuarioRepositorio(BancoContext bancoContext) : IUsuarioRepositorio
 {
     private readonly BancoContext _bancoContext = bancoContext;
 
-    public UsuarioModel? ListarPorId(int id)
+    public UsuarioModel? BuscarPorId(int id)
     {
         return _bancoContext.Usuarios?.FirstOrDefault(x => x.Id == id);
     }
@@ -39,7 +39,7 @@ public class UsuarioRepositorio(BancoContext bancoContext) : IUsuarioRepositorio
 
     public UsuarioModel Atualizar(UsuarioModel usuario)
     {
-        UsuarioModel? usuarioDB = ListarPorId(usuario.Id);
+        UsuarioModel? usuarioDB = BuscarPorId(usuario.Id);
 
         if (usuarioDB != null)
         {
@@ -58,9 +58,37 @@ public class UsuarioRepositorio(BancoContext bancoContext) : IUsuarioRepositorio
         throw new Exception("Houve um erro na atualização do usuario");
     }
 
+    public UsuarioModel AlterarSenha(AlterarSenhaModel alterarSenha)
+    {
+        UsuarioModel? usuarioDB = BuscarPorId(alterarSenha.Id);
+
+        if (usuarioDB != null)
+        {
+            if (usuarioDB.SenhaValida(alterarSenha.SenhaAtual))
+            {
+                if (!usuarioDB.SenhaValida(alterarSenha.NovaSenha))
+                {
+                    usuarioDB.SetNovaSenha(alterarSenha.NovaSenha);
+                    usuarioDB.DataAtualizacao = DateTime.Now;
+
+                    _bancoContext.Usuarios?.Update(usuarioDB);
+                    _bancoContext.SaveChanges();
+
+                    return usuarioDB;
+                }
+
+                throw new Exception("Nova senha não pode ser igual a atual.");
+            }
+
+            throw new Exception("Senha atual está incorreta.");
+        }
+
+        throw new Exception("Houve um erro na atualização da senha. Usuário não encontrado.");
+    }
+
     public bool Apagar(int id)
     {
-        UsuarioModel? usuarioDB = ListarPorId(id);
+        UsuarioModel? usuarioDB = BuscarPorId(id);
 
         if (usuarioDB != null)
         {
