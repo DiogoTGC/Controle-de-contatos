@@ -5,10 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ControleDeContatos.Controllers;
 
-public class LoginController(IUsuarioRepositorio usuarioRepositorio, ISessao sessao) : Controller
+public class LoginController(IUsuarioRepositorio usuarioRepositorio, ISessao sessao, IEmail email) : Controller
 {
     private readonly IUsuarioRepositorio _usuarioRepositorio = usuarioRepositorio;
     private readonly ISessao _sessao = sessao;
+    private readonly IEmail _email = email;
 
     public IActionResult Index()
     {
@@ -42,6 +43,48 @@ public class LoginController(IUsuarioRepositorio usuarioRepositorio, ISessao ses
         catch (Exception erro)
         {
             TempData["MensagemErro"] = $"Não conseguimos realizar seu login, tente novamente. {erro.Message}";
+            return Redirect("Index");
+        }
+    }
+
+    public IActionResult RedefinirSenha()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public IActionResult EnviarLinkRedefinirSenha(RedefinirSenhaModel redefinirSenhaModel)
+    {
+        try
+        {
+            if (ModelState.IsValid)
+            {
+                UsuarioModel? usuario = _usuarioRepositorio.BuscarPorLoginEmail(redefinirSenhaModel.Login, redefinirSenhaModel.Email);
+
+                if (usuario != null)
+                {
+                    string novaSenha = usuario.GerarNovaSenha();
+                    string mensagem = $"Sua nova senha é : {novaSenha}";
+                    bool emailEnviado = _email.Enviar(usuario.Email, "Sistema de contatos - Nova senha", mensagem);
+
+                    if (emailEnviado)
+                    {
+                        _usuarioRepositorio.Atualizar(usuario);
+                        TempData["MensagemSucesso"] = $"Enviamos para seu email cadastrado uma nova senha.";
+                    }
+                    else
+                    {
+                        TempData["MensagemErro"] = $"Não conseguimos enviar o email. Por favor, tente novamente.";
+                    }
+                    return RedirectToAction("Index", "Login");
+                }
+                TempData["MensagemErro"] = $"Não conseguimos redefinir sua senha. Por favor, verifique os dados informados.";
+            }
+            return View("Index");
+        }
+        catch (Exception erro)
+        {
+            TempData["MensagemErro"] = $"Não conseguimos redefinir sua senha, tente novamente. {erro.Message}";
             return Redirect("Index");
         }
     }
