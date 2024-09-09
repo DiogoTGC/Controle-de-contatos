@@ -17,23 +17,28 @@ public class Email(IConfiguration configuration) : IEmail
             string? senha = _configuration.GetValue<string>("SMTP: Senha");
             int porta = _configuration.GetValue<int>("SMTP: Porta");
 
-            MailMessage mail = new()
+            if (username != null)
             {
-                From = new MailAddress(username, nome)
-            };
+                MailMessage mail = new()
+                {
+                    From = new MailAddress(username, nome)
+                };
 
-            mail.To.Add(email);
-            mail.Subject = assunto;
-            mail.Body = mensagem;
-            mail.IsBodyHtml = true;
-            mail.Priority = MailPriority.High;
+                mail.To.Add(email);
+                mail.Subject = assunto;
+                mail.Body = mensagem;
+                mail.IsBodyHtml = true;
+                mail.Priority = MailPriority.High;
 
-            using SmtpClient smtp = new(host, porta);
-            smtp.Credentials = new NetworkCredential(username, senha);
-            smtp.EnableSsl = true;
-            smtp.Send(mail);
+                using SmtpClient smtp = new(host, porta);
+                smtp.Credentials = new NetworkCredential(username, senha);
+                smtp.EnableSsl = true;
+                smtp.Send(mail);
 
-            return true;
+                return true;
+            }
+
+            return false;
         }
         catch (Exception)
         {
