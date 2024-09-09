@@ -21,14 +21,19 @@ public class UsuarioModel
     public DateTime DataCadastro { get; set; }
     public DateTime? DataAtualizacao { get; set; }
 
+    public bool SenhaValida(string senha)
+    {
+        return Senha == senha.GerarHash();
+    }
+
     public void SetSenhaHash()
     {
         Senha = Senha.GerarHash();
     }
 
-    public bool SenhaValida(string senha)
+    public void SetNovaSenha(string novaSenha)
     {
-        return Senha == senha.GerarHash();
+        Senha = novaSenha.GerarHash();
     }
 
     public string GerarNovaSenha()
