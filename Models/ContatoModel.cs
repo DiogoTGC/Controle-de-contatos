@@ -13,4 +13,6 @@ public class ContatoModel
     [Required(ErrorMessage = "Digite o celular do contato")]
     [Phone(ErrorMessage = "Celular inválido")]
     public required string Celular { get; set; }
+    public required int? UsuarioId { get; set; }
+    public UsuarioModel? Usuario { get; set; }
 }
